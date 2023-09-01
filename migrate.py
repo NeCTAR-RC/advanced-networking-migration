@@ -215,7 +215,7 @@ def check(args) -> None:
     pt.field_names = PrettyResource.header
 
     pt.add_rows(_resources_to_prettyrows(conn.network.networks(
-        is_router_external=False), all_resources))
+        is_router_external=False, project_id=conn.current_project_id), all_resources))
     pt.add_rows(_resources_to_prettyrows(conn.network.routers(),
                                          all_resources))
     pt.add_rows(_resources_to_prettyrows(conn.network.ips(), all_resources))
