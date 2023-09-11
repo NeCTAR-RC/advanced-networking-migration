@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from functools import cache
+from functools import lru_cache
 
 import openstack
 from prettytable import PrettyTable
@@ -14,7 +14,7 @@ CACHE_TIMEOUT = '2 minutes'
 TAG_LEGACY = 'legacy-networking'
 
 
-@cache
+@lru_cache
 def get_conn():
     return openstack.connect(cloud='envvars')
 
