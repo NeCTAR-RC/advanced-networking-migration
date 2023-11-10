@@ -154,6 +154,15 @@ class PrettyRouter(PrettyResource):
             return 'Replace'
 
 
+class PrettyLoadbalancer(PrettyResource):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+    def _get_recommendation(self) -> str:
+        if is_legacy_network(self.obj.vip_network_id):
+            return 'Replace'
+
+
 class PrettyServer(PrettyResource):
     def __init__(self, obj):
         super().__init__(obj)
@@ -188,6 +197,7 @@ def _resource_to_prettyresource(obj) -> PrettyResource:
         'floatingip': 'PrettyFIP',
         'network': 'PrettyNetwork',
         'router': 'PrettyRouter',
+        'loadbalancer': 'PrettyLoadbalancer',
         'server': 'PrettyServer',
     }
 
@@ -218,6 +228,8 @@ def check(args) -> None:
         is_router_external=False, project_id=conn.current_project_id),
         all_resources))
     pt.add_rows(_resources_to_prettyrows(conn.network.routers(),
+                                         all_resources))
+    pt.add_rows(_resources_to_prettyrows(conn.load_balancer.load_balancers(),
                                          all_resources))
     pt.add_rows(_resources_to_prettyrows(conn.network.ips(), all_resources))
     pt.add_rows(_resources_to_prettyrows(conn.compute.servers(),
