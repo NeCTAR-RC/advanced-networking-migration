@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 from functools import lru_cache
@@ -224,16 +224,21 @@ def check(args) -> None:
     pt = PrettyTable(align='l')
     pt.field_names = PrettyResource.header
 
-    pt.add_rows(_resources_to_prettyrows(conn.network.networks(
-        is_router_external=False, project_id=conn.current_project_id),
+    rows = []
+    rows.extend(_resources_to_prettyrows(
+        conn.network.networks(
+            is_router_external=False,
+            project_id=conn.current_project_id),
         all_resources))
-    pt.add_rows(_resources_to_prettyrows(conn.network.routers(),
+    rows.extend(_resources_to_prettyrows(conn.network.routers(),
                                          all_resources))
-    pt.add_rows(_resources_to_prettyrows(conn.load_balancer.load_balancers(),
+    rows.extend(_resources_to_prettyrows(conn.load_balancer.load_balancers(),
                                          all_resources))
-    pt.add_rows(_resources_to_prettyrows(conn.network.ips(), all_resources))
-    pt.add_rows(_resources_to_prettyrows(conn.compute.servers(),
+    rows.extend(_resources_to_prettyrows(conn.network.ips(), all_resources))
+    rows.extend(_resources_to_prettyrows(conn.compute.servers(),
                                          all_resources))
+    for r in rows:
+        pt.add_row(r)
 
     # Print general recommendation
     if not is_legacy_project() and pt.rowcount == 0:
